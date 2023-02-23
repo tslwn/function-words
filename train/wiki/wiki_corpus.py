@@ -2,6 +2,7 @@
 # pyright: reportMissingTypeStubs=false
 # pyright: reportUnknownVariableType=false
 from datasets.load import load_dataset
+from datasets.utils.logging import set_verbosity_error
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tag import pos_tag
 from nltk.tokenize import word_tokenize
@@ -9,6 +10,8 @@ import random
 from typing import cast, Optional, TypedDict
 from train.abstract.corpus import AbstractCorpus
 from tag.penn_treebank import PennTreebankTagger
+
+set_verbosity_error()
 
 
 class Article(TypedDict):
@@ -24,7 +27,7 @@ class WikiCorpus(AbstractCorpus):
 
         self._tagger = PennTreebankTagger()
 
-        # Load all of the articles.
+        # Load all of the articles
         dataset = load_dataset(
             "wikipedia", "20220301.simple", split="train")
 

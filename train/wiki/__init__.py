@@ -1,4 +1,6 @@
-# pyright: reportMissingTypeStubs=false,reportPrivateUsage=false,reportUnknownMemberType=false
+# pyright: reportMissingTypeStubs=false
+# pyright: reportPrivateUsage=false
+# pyright: reportUnknownMemberType=false
 import nltk
 import ssl
 
@@ -10,7 +12,7 @@ except AttributeError:
 else:
     ssl._create_default_https_context = _create_unverified_https_context
 
-nltk.download("punkt")
-nltk.download("averaged_perceptron_tagger")
-nltk.download("universal_tagset")
-nltk.download("wordnet")
+nltk.download("punkt", quiet=True)
+nltk.download("averaged_perceptron_tagger", quiet=True)
+nltk.download("universal_tagset", quiet=True)
+nltk.download("wordnet", quiet=True)

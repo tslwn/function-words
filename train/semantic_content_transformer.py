@@ -1,12 +1,13 @@
-# pyright: reportMissingTypeStubs=false,reportUnknownMemberType=false,reportUnknownVariableType=false
-from math import log
+# pyright: reportMissingTypeStubs=false
+# pyright: reportUnknownMemberType=false
+# pyright: reportUnknownVariableType=false
+from math import isnan, log
 from nltk import FreqDist
 from nltk.collocations import BigramCollocationFinder
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted
-from typing import Union
 
 
 class SemanticContentTransformer(BaseEstimator, TransformerMixin):
@@ -81,13 +82,35 @@ class SemanticContentTransformer(BaseEstimator, TransformerMixin):
 
         return self
 
-    def transform(self, _X: list[list[tuple[str, bool]]]) -> list[list[Union[bool, float]]]:
+    def transform(self, _X: list[list[tuple[str, bool]]]) -> tuple[NDArray[np.float_], NDArray[np.int_]]:
         check_is_fitted(self, "kl_divergences_")
         check_is_fitted(self, "is_function_words_")
 
-        return [[self.kl_divergences_[index], self.is_function_words_[index]] for index in range(0, self.index_)]
+        kl_divergences: list[float] = []
+        is_function_words: list[int] = []
 
-    def get_feature_names_out(self, input_features: None = None) -> NDArray[np.str_]:
+        for index in range(0, self.index_):
+            word = self.words_.get(index, None)
+            kl_divergence = self.kl_divergences_.get(index, float("nan"))
+            is_function_word = self.is_function_words_.get(index, None)
+
+            if word is not None and not isnan(kl_divergence) and is_function_word is not None:
+                kl_divergences.append(kl_divergence)
+                is_function_words.append(is_function_word)
+
+        return np.array(kl_divergences).reshape(-1, 1), np.array(is_function_words)
+
+    def get_feature_names_out(self, input_features: None = None) -> list[str]:
         check_is_fitted(self, "words_")
 
-        return np.array([self.words_[index] for index in range(0, self.index_)])
+        words: list[str] = []
+
+        for index in range(0, self.index_):
+            word = self.words_.get(index, None)
+            kl_divergence = self.kl_divergences_.get(index, float("nan"))
+            is_function_word = self.is_function_words_.get(index, None)
+
+            if word is not None and not isnan(kl_divergence) and is_function_word is not None:
+                words.append(word)
+
+        return words
