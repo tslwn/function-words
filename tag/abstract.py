@@ -1,9 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple
-
-TaggedWord = Tuple[str, str]
-
-TaggedDocument = List[TaggedWord]
 
 
 class AbstractTagger(ABC):
@@ -12,12 +7,12 @@ class AbstractTagger(ABC):
 
     @property
     @abstractmethod
-    def _function_word_tags(self) -> List[str]:
+    def _function_word_tags(self) -> list[str]:
         pass
 
     @property
     @abstractmethod
-    def _removed_tags(self) -> List[str]:
+    def _removed_tags(self) -> list[str]:
         pass
 
     def is_function_word_tag(self, tag: str) -> bool:

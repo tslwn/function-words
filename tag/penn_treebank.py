@@ -1,10 +1,9 @@
-from typing import List
 from .abstract import AbstractTagger
 
 
 class PennTreebankTagger(AbstractTagger):
     @property
-    def _function_word_tags(self) -> List[str]:
+    def _function_word_tags(self) -> list[str]:
         return [
             "CC",
             "DT",
@@ -30,7 +29,7 @@ class PennTreebankTagger(AbstractTagger):
         ]
 
     @property
-    def _removed_tags(self) -> List[str]:
+    def _removed_tags(self) -> list[str]:
         return [
             "#",
             "$",

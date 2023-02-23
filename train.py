@@ -1,41 +1,39 @@
+# pyright: reportMissingTypeStubs=false
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownLambdaType=false
+# pyright: reportUnknownMemberType=false
+# pyright: reportUnknownVariableType=false
 from argparse import ArgumentParser
-from train.abstract.trainer import AbstractTrainer
-from train.bnc.BNCTrainer import BNCTrainer
-from train.wiki.WikiTrainer import WikiTrainer
+import pandas as pd
+from train.abstract.corpus import AbstractCorpus
+from train.bnc.bnc_corpus import BNCCorpus
+from train.wiki.wiki_corpus import WikiCorpus
+from train.semantic_content_transformer import SemanticContentTransformer
 
 parser = ArgumentParser()
 parser.add_argument("-c", "--corpus", choices=["bnc", "wiki"])
-parser.add_argument("-n", "--count", type=int)
-parser.add_argument("-w", "--window-size", type=int)
-
-parser.add_argument("-t", "--train", action="store_true")
-parser.add_argument("--no-train", dest="train", action="store_false")
-parser.set_defaults(train=True)
-
-parser.add_argument("-p", "--plot", action="store_true")
-parser.add_argument("--no-plot", dest="plot", action="store_false")
-parser.set_defaults(plot=False)
-
+parser.add_argument("-n", "--sample-size", type=float, default=1.0)
+parser.add_argument("-w", "--window-size", type=int, default=11)
 args = parser.parse_args()
 
-corpus = args.corpus
-count = args.count
-window_size = args.window_size
+corpus: AbstractCorpus
 
-train = args.train
-plot = args.plot
-
-trainer: AbstractTrainer
-if corpus == "bnc":
-    trainer = BNCTrainer(count, window_size)
-elif corpus == "wiki":
-    trainer = WikiTrainer(count, window_size)
+if args.corpus == "bnc":
+    corpus = BNCCorpus(sample_size=args.sample_size)
+elif args.corpus == "wiki":
+    corpus = WikiCorpus(sample_size=args.sample_size)
 else:
     raise NotImplementedError()
 
-if args.train:
-    trainer.train()
-    trainer.write()
+semantic_content_transformer = SemanticContentTransformer(
+    window_size=args.window_size)
 
-if args.plot:
-    trainer.plot()
+semantic_contents = semantic_content_transformer.fit_transform(
+    corpus.documents())
+
+data = pd.DataFrame(data=semantic_contents, columns=[
+                    "KL divergence", "Function word"])
+data["Word"] = semantic_content_transformer.get_feature_names_out()
+
+path = f"results/{args.corpus}/sample_size_{args.sample_size}_window_size_{args.window_size}.csv"
+data.to_csv(path)

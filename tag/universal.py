@@ -1,10 +1,9 @@
-from typing import List
 from .abstract import AbstractTagger
 
 
 class UniversalTagger(AbstractTagger):
     @property
-    def _function_word_tags(self) -> List[str]:
+    def _function_word_tags(self) -> list[str]:
         return [
             "ADP",
             "CONJ",
@@ -14,7 +13,7 @@ class UniversalTagger(AbstractTagger):
         ]
 
     @property
-    def _removed_tags(self) -> List[str]:
+    def _removed_tags(self) -> list[str]:
         return [
             "NUM",
             ".",
