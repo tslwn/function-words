@@ -34,6 +34,9 @@ for col in range(ncols):
     for row in range(nrows):
         index = (col * nrows) + row
 
+        if index >= len(parameter_grid):
+            break
+
         parameters = cast(Parameters, parameter_grid[index])
         corpus_name = parameters["corpus_name"]
         sample_size = parameters["sample_size"]

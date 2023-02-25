@@ -28,35 +28,50 @@ pipeline = Pipeline(
 
 class Parameters(TypedDict):
     corpus_name: str
+    seed: int
     sample_size: float
     window_size: int
 
 
 parameter_grid = ParameterGrid({
-    "corpus_name": ["Simple English Wikipedia"],
+    "corpus_name": ["BNC", "Simple English Wikipedia"],
+    "seed": [1, 2, 3, 4, 5],
     "sample_size": [0.001],
-    "window_size": [3],
+    "window_size": [11],
 })
 
 
-def get_corpus(corpus_name: str, sample_size: float) -> AbstractCorpus:
+def get_parameters(parameters: Parameters) -> tuple[str, int, float, int]:
+    corpus_name = parameters["corpus_name"]
+    seed = parameters["seed"]
+    sample_size = parameters["sample_size"]
+    window_size = parameters["window_size"]
+
+    return corpus_name, seed, sample_size, window_size
+
+
+def get_parameters_str(parameters: Parameters) -> str:
+    corpus_name, seed, sample_size, window_size = get_parameters(parameters)
+
+    return f"{corpus_name}, seed={seed}, sample_size={sample_size}, window_size={window_size}"
+
+
+def get_corpus(parameters: Parameters) -> AbstractCorpus:
+    corpus_name, seed, sample_size, _window_size = get_parameters(parameters)
+
     if corpus_name == "BNC":
-        return BNCCorpus(sample_size=sample_size)
+        return BNCCorpus(seed=seed, sample_size=sample_size)
     elif corpus_name == "Simple English Wikipedia":
-        return WikiCorpus(sample_size=sample_size)
+        return WikiCorpus(seed=seed, sample_size=sample_size)
     else:
         raise NotImplementedError
 
 
-def train(parameters: Parameters) -> tuple[NDArray[np.float_], NDArray[np.int_]]:
-    corpus_name = parameters["corpus_name"]
-    sample_size = parameters["sample_size"]
-    window_size = parameters["window_size"]
-
-    corpus = get_corpus(corpus_name, sample_size)
+def train(parameters: Parameters) -> tuple[NDArray[np.float_], NDArray[np.bool_]]:
+    corpus = get_corpus(parameters)
 
     x, y = SemanticContentTransformer(
-        window_size=window_size).fit_transform(corpus.documents())
+        window_size=parameters["window_size"]).fit_transform(corpus.documents())
 
     x = pipeline.fit_transform(x).flatten()
 
