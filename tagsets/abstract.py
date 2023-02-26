@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class AbstractTagger(ABC):
+class AbstractTagset(ABC):
     def __init__(self):
         pass
 

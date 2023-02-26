@@ -1,6 +1,7 @@
 
 # pyright: reportMissingTypeStubs=false
 # pyright: reportUnknownVariableType=false
+
 from datasets.load import load_dataset
 from datasets.utils.logging import set_verbosity_error
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -8,9 +9,11 @@ from nltk.tag import pos_tag
 from nltk.tokenize import word_tokenize
 import random
 from typing import cast, Optional, TypedDict
-from train.abstract.corpus import AbstractCorpus
-from tag.penn_treebank import PennTreebankTagger
 
+from corpora.abstract import AbstractCorpus
+from tagsets.penn_treebank import PennTreebankTagset
+
+# Suppress `datasets` log messages.
 set_verbosity_error()
 
 
@@ -25,7 +28,7 @@ class WikiCorpus(AbstractCorpus):
     def __init__(self, seed: Optional[int] = None, sample_size: float = 1.0) -> None:
         super().__init__(seed, sample_size)
 
-        self._tagger = PennTreebankTagger()
+        self._tagset = PennTreebankTagset()
 
         # Load all of the articles
         dataset = load_dataset(
@@ -61,10 +64,10 @@ class WikiCorpus(AbstractCorpus):
                 # Appease the type checker.
                 assert isinstance(word, str)
 
-                if not self._tagger.is_removed_tag(tag):
+                if not self._tagset.is_removed_tag(tag):
                     lemma = lemmatizer.lemmatize(word.lower())
                     document.append(
-                        (lemma, self._tagger.is_function_word_tag(tag)))
+                        (lemma, self._tagset.is_function_word_tag(tag)))
 
             documents.append(document)
 

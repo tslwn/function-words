@@ -2,20 +2,22 @@
 # pyright: reportMissingTypeStubs=false
 # pyright: reportUnknownMemberType=false
 # pyright: reportUnknownVariableType=false
+
 import glob
 from nltk.corpus.reader.bnc import BNCCorpusReader
 import os
 import random
 from typing import Optional
-from train.abstract.corpus import AbstractCorpus
-from tag.c5 import C5Tagger
+
+from .abstract import AbstractCorpus
+from tagsets.c5 import C5Tagset
 
 
 class BNCCorpus(AbstractCorpus):
     def __init__(self, seed: Optional[int] = None, sample_size: float = 1.0) -> None:
         super().__init__(seed, sample_size)
 
-        self._tagger = C5Tagger()
+        self._tagset = C5Tagset()
 
         # Find the file paths of all of the documents.
         fileids = glob.glob(
@@ -47,9 +49,9 @@ class BNCCorpus(AbstractCorpus):
                 assert isinstance(word, str)
                 assert isinstance(tag, str)
 
-                if not self._tagger.is_removed_tag(tag):
+                if not self._tagset.is_removed_tag(tag):
                     document.append(
-                        (word, self._tagger.is_function_word_tag(tag)))
+                        (word, self._tagset.is_function_word_tag(tag)))
 
             documents.append(document)
 

@@ -1,6 +1,7 @@
 import random
 from typing import Optional
-from artificial.protocols import Protocol
+
+from .protocols import Protocol
 
 
 class ProtocolSampler:

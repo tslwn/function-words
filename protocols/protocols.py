@@ -4,6 +4,7 @@ https://github.com/tomekkorbak/measuring-non-trivial-compositionality/tree/maste
 """
 
 # pyright: reportUnknownMemberType=false
+
 from copy import deepcopy
 from functools import partial
 from itertools import product

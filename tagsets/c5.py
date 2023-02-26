@@ -1,7 +1,7 @@
-from .abstract import AbstractTagger
+from .abstract import AbstractTagset
 
 
-class C5Tagger(AbstractTagger):
+class C5Tagset(AbstractTagset):
     @property
     def _function_word_tags(self) -> list[str]:
         return [

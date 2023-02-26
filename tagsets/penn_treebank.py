@@ -1,7 +1,7 @@
-from .abstract import AbstractTagger
+from .abstract import AbstractTagset
 
 
-class PennTreebankTagger(AbstractTagger):
+class PennTreebankTagset(AbstractTagset):
     @property
     def _function_word_tags(self) -> list[str]:
         return [
