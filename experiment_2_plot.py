@@ -14,13 +14,13 @@ from utils import plot
 def callback(ax: plt.Axes, result: tuple[Parameters, NDArray[np.int_]]) -> None:
     parameters, x = result
 
-    protocol_name, num_colors, num_shapes, _seed, sample_size = get_parameter_values(
+    protocol_name, num_colors, num_shapes, _seed, sample_size, scaler_name = get_parameter_values(
         parameters)
 
     ax.set_title(
-        f"{protocol_name}, C={num_colors}, S={num_shapes}, N={sample_size}")
+        f"{protocol_name}, {scaler_name}, C={num_colors}, S={num_shapes}, N={sample_size}")
 
-    ax.set_xlabel("Semantic content (normalised)")
+    ax.set_xlabel("Semantic content")
 
     seaborn.stripplot(x=x, ax=ax)
 

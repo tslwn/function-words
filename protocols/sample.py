@@ -12,7 +12,7 @@ class ProtocolSampler:
         random.seed(seed)
 
     def samples(self, sample_size: int) -> list[str]:
-        return [self._protocol[derivation] for derivation in random.choices(self._derivations, k=sample_size)]
+        return [random.choice(self._protocol[derivation]) for derivation in random.choices(self._derivations, k=sample_size)]
 
     def documents(self, sample_size: int) -> list[list[tuple[str, bool]]]:
         documents: list[list[tuple[str, bool]]] = []

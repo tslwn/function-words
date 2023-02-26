@@ -14,7 +14,7 @@ import string
 from typing import cast, Tuple, Union
 
 Derivation = Union[str, Tuple["Derivation", "Derivation"]]
-Protocol = dict[Derivation, str]
+Protocol = dict[Derivation, list[str]]
 
 SEPARATOR = " "
 
@@ -55,8 +55,10 @@ def get_english_protocol(num_colors: int, num_shapes: int) -> Protocol:
     protocol: Protocol = {}
 
     for color, shape in product(colors, shapes):
-        protocol[color, shape] = SEPARATOR.join([
-            color_map[color], "AND", shape_map[shape]])
+        protocol[color, shape] = [
+            SEPARATOR.join([color_map[color], "AND", shape_map[shape]]),
+            SEPARATOR.join([shape_map[shape], "AND", color_map[color]])
+        ]
 
     return protocol
 
@@ -73,8 +75,10 @@ def get_tc_protocol(num_colors: int, num_shapes: int) -> Protocol:
     protocol: Protocol = {}
 
     for color, shape in product(colors, shapes):
-        protocol[(color, shape)] = SEPARATOR.join(
-            (color_map[color], shape_map[shape]))
+        protocol[(color, shape)] = [
+            SEPARATOR.join((color_map[color], shape_map[shape])),
+            SEPARATOR.join((shape_map[shape], color_map[color]))
+        ]
 
     return protocol
 
@@ -88,7 +92,7 @@ def get_ntc_protocol(num_colors: int, num_shapes: int) -> Protocol:
         for j, shape in enumerate(shapes):
             word_1 = alphabet[(i - j) % (num_colors + num_shapes)]
             word_2 = alphabet[(i + j) % (num_colors + num_shapes)]
-            protocol[color, shape] = word_1 + SEPARATOR + word_2
+            protocol[color, shape] = [word_1 + SEPARATOR + word_2]
 
     return protocol
 
@@ -104,7 +108,7 @@ def get_holistic_protocol(num_colors: int, num_shapes: int) -> Protocol:
     protocol: Protocol = {}
 
     for (color, shape), name in zip(objects, object_names):
-        protocol[(color, shape)] = SEPARATOR.join(name)
+        protocol[(color, shape)] = [SEPARATOR.join(name)]
 
     return protocol
 
@@ -117,8 +121,9 @@ def get_random_protocol(num_colors: int, num_shapes: int) -> Protocol:
     protocol: Protocol = {}
 
     for color, shape in objects:
-        protocol[(shape, color)] = SEPARATOR.join(
-            [random.choice(alphabet), random.choice(alphabet)])
+        protocol[(shape, color)] = [
+            SEPARATOR.join([random.choice(alphabet), random.choice(alphabet)])
+        ]
 
     return protocol
 
@@ -143,8 +148,9 @@ def get_order_sensitive_ntc_protocol(num_colors: int, num_shapes: int) -> Protoc
     mapping: Protocol = {}
 
     for color, shape in objects:
-        mapping[(color, shape)] = SEPARATOR.join(
-            (color_map[color], shape_map[shape]))
+        mapping[(color, shape)] = [
+            SEPARATOR.join((color_map[color], shape_map[shape]))
+        ]
 
     return mapping
 
@@ -154,12 +160,13 @@ def get_context_sensitive_ntc_protocol(num_colors: int, num_shapes: int) -> Prot
 
     protocol: Protocol = {}
 
-    for (derivation, phrase) in tc_protocol.items():
-        [color, shape] = phrase.split(SEPARATOR)
+    for (derivation, phrases) in tc_protocol.items():
+        for phrase in phrases:
+            [color, shape] = phrase.split(SEPARATOR)
 
-        protocol[("color", derivation)] = color + "_"
-        protocol[("shape", derivation)] = shape + "_"
-        protocol[("both", derivation)] = phrase
+            protocol[("color", derivation)] = [color + "_"]
+            protocol[("shape", derivation)] = [shape + "_"]
+            protocol[("both", derivation)] = [phrase]
 
     return protocol
 
@@ -173,7 +180,7 @@ def get_diagonal_ntc_protocol(num_colors: int, num_shapes: int) -> Protocol:
         for j, shape in enumerate(shapes):
             word_1 = alphabet[i + j]
             word_2 = alphabet[j if i + j < num_colors else num_colors - i - 1]
-            protocol[color, shape] = word_1 + SEPARATOR + word_2
+            protocol[color, shape] = [word_1 + SEPARATOR + word_2]
 
     return protocol
 
@@ -187,7 +194,7 @@ def get_rotated_ntc_protocol(num_colors: int, num_shapes: int) -> Protocol:
         for j, shape in enumerate(shapes):
             word_1 = alphabet[i - j + num_shapes]
             word_2 = alphabet[j + i]
-            protocol[color, shape] = word_1 + SEPARATOR + word_2
+            protocol[color, shape] = [word_1 + SEPARATOR + word_2]
 
     return protocol
 
