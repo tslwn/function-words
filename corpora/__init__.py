@@ -3,6 +3,7 @@
 # pyright: reportUnknownMemberType=false
 import nltk
 import ssl
+from typing import Literal
 
 from .abstract import AbstractCorpus
 from .bnc import BNCCorpus
@@ -22,7 +23,10 @@ nltk.download("universal_tagset", quiet=True)
 nltk.download("wordnet", quiet=True)
 
 
-def get_corpus(corpus_name: str, seed: int, sample_size: float) -> AbstractCorpus:
+CorpusName = Literal["BNC", "Simple English Wikipedia"]
+
+
+def get_corpus(corpus_name: CorpusName, seed: int, sample_size: float) -> AbstractCorpus:
     if corpus_name == "BNC":
         return BNCCorpus(seed=seed, sample_size=sample_size)
     elif corpus_name == "Simple English Wikipedia":

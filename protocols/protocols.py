@@ -11,10 +11,22 @@ from itertools import product
 import numpy as np
 import random
 import string
-from typing import cast, Tuple, Union
+from typing import cast, Literal, Tuple, Union
 
 Derivation = Union[str, Tuple["Derivation", "Derivation"]]
+
 Protocol = dict[Derivation, list[str]]
+
+ProtocolName = Literal[
+    "english",
+    "diagonal",
+    "holistic",
+    "ntc",
+    "order",
+    "random",
+    "rotated",
+    "tc",
+]
 
 SEPARATOR = " "
 
@@ -199,7 +211,7 @@ def get_rotated_ntc_protocol(num_colors: int, num_shapes: int) -> Protocol:
     return protocol
 
 
-def get_protocol(protocol_name: str, num_colors: int, num_shapes: int) -> Protocol:
+def get_protocol(protocol_name: ProtocolName, num_colors: int, num_shapes: int) -> Protocol:
     if protocol_name == "english":
         return get_english_protocol(num_colors=num_colors, num_shapes=num_shapes)
     if protocol_name == "diagonal":

@@ -1,7 +1,7 @@
 import random
 from typing import Optional
 
-from .protocols import Protocol
+from .protocols import Protocol, SEPARATOR
 
 
 class ProtocolSampler:
@@ -20,7 +20,7 @@ class ProtocolSampler:
         for sample in self.samples(sample_size):
             document: list[tuple[str, bool]] = []
 
-            for word in sample.split(" "):
+            for word in sample.split(SEPARATOR):
                 document.append((word, False))
 
             documents.append(document)

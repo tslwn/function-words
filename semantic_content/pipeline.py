@@ -5,7 +5,7 @@ from sklearn.base import BaseEstimator, OneToOneFeatureMixin, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, Normalizer, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
-from typing import Any
+from typing import Any, Literal
 
 
 class IdentityScaler(OneToOneFeatureMixin, TransformerMixin, BaseEstimator):
@@ -19,7 +19,21 @@ class IdentityScaler(OneToOneFeatureMixin, TransformerMixin, BaseEstimator):
         return X
 
 
-scalers = {
+ScalerName = Literal[
+    "none",
+    "standard",
+    "min_max",
+    "max_abs",
+    "robust",
+    "yeo_johnson",
+    "box_cox",
+    "quantile_uniform",
+    "quantile_normal",
+    "normal"
+]
+
+
+scalers: dict[ScalerName, BaseEstimator] = {
     "none": IdentityScaler(),
     "standard": StandardScaler(),
     "min_max": MinMaxScaler(),
@@ -33,8 +47,9 @@ scalers = {
 }
 
 
-def make_pipeline(scaler_name: str) -> Pipeline:
+def make_pipeline(scaler_name: ScalerName) -> Pipeline:
     scaler = scalers.get(scaler_name)
+
     if scaler is None:
         raise NotImplementedError
 

@@ -1,6 +1,7 @@
 # pyright: reportMissingTypeStubs=false
 # pyright: reportUnknownMemberType=false
 # pyright: reportUnknownVariableType=false
+
 from math import isnan, log
 from nltk import FreqDist
 from nltk.collocations import BigramCollocationFinder

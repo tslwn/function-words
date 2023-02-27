@@ -8,48 +8,39 @@ from numpy.typing import NDArray
 from sklearn.model_selection import ParameterGrid
 from typing import NamedTuple, TypedDict
 
-from corpora import get_corpus
-from semantic_content.pipeline import make_pipeline
+from corpora import CorpusName, get_corpus
+from semantic_content.pipeline import make_pipeline, ScalerName
 from semantic_content.transformer import SemanticContentTransformer
 
 
 parameter_grid = ParameterGrid({
     "corpus_name": [
-        # "BNC",
+        "BNC",
         "Simple English Wikipedia"
     ],
-    "seed": [1],
-    "sample_size": [0.01],
+    "seed": list(range(3)),
+    "sample_size": [0.001],
     "window_size": [11],
     "scaler_name": [
-        "none",
         "standard",
-        "min_max",
-        "max_abs",
-        "robust",
-        "yeo_johnson",
-        # "box_cox",
-        "quantile_uniform",
-        "quantile_normal",
-        # "normal",
     ]
 })
 
 
 class Parameters(TypedDict):
-    corpus_name: str
+    corpus_name: CorpusName
     seed: int
     sample_size: float
     window_size: int
-    scaler_name: str
+    scaler_name: ScalerName
 
 
 ParameterValues = NamedTuple("ParameterValues", [
-    ("corpus_name", str),
+    ("corpus_name", CorpusName),
     ("seed", int),
     ("sample_size", float),
     ("window_size", int),
-    ("scaler_name", str),
+    ("scaler_name", ScalerName),
 ])
 
 

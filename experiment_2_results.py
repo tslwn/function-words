@@ -8,21 +8,16 @@ from numpy.typing import NDArray
 from sklearn.model_selection import ParameterGrid
 from typing import NamedTuple, TypedDict
 
-from protocols.protocols import get_protocol
+from protocols.protocols import get_protocol, ProtocolName
 from protocols.sample import ProtocolSampler
-from semantic_content.pipeline import make_pipeline
+from semantic_content.pipeline import make_pipeline, ScalerName
 from semantic_content.transformer import SemanticContentTransformer
 
 
 parameter_grid = ParameterGrid({
     "protocol_name": [
         "english",
-        # "diagonal",
-        # "holistic",
         "ntc",
-        # "order",
-        # "random",
-        # "rotated",
         "tc",
     ],
     "num_colors": [100],
@@ -30,31 +25,22 @@ parameter_grid = ParameterGrid({
     "seed": [1],
     "sample_size": [100000],
     "scaler_name": [
-        "none",
         "standard",
-        "min_max",
-        "max_abs",
-        "robust",
-        "yeo_johnson",
-        # "box_cox",
-        "quantile_uniform",
-        "quantile_normal",
-        # "normal",
     ]
 })
 
 
 class Parameters(TypedDict):
-    protocol_name: str
+    protocol_name: ProtocolName
     num_colors: int
     num_shapes: int
     seed: int
     sample_size: int
-    scaler_name: str
+    scaler_name: ScalerName
 
 
-ParameterValues = NamedTuple("ParameterValues", [("protocol_name", str), (
-    "num_colors", int), ("num_shapes", int), ("seed", int), ("sample_size", int), ("scaler_name", str)])
+ParameterValues = NamedTuple("ParameterValues", [("protocol_name", ProtocolName), (
+    "num_colors", int), ("num_shapes", int), ("seed", int), ("sample_size", int), ("scaler_name", ScalerName)])
 
 
 def get_parameter_values(parameters: Parameters) -> ParameterValues:
