@@ -1,30 +1,14 @@
-# pyright: reportMissingTypeStubs=false
 # pyright: reportUnknownArgumentType=false
 # pyright: reportUnknownMemberType=false
 # pyright: reportUnknownVariableType=false
 
 import numpy as np
 from numpy.typing import NDArray
-from sklearn.model_selection import ParameterGrid
 from typing import NamedTuple, TypedDict
 
 from corpora import CorpusName, get_corpus
 from semantic_content.pipeline import make_pipeline, ScalerName
 from semantic_content.transformer import SemanticContentTransformer
-
-
-parameter_grid = ParameterGrid({
-    "corpus_name": [
-        "BNC",
-        "Simple English Wikipedia"
-    ],
-    "seed": list(range(3)),
-    "sample_size": [0.001],
-    "window_size": [11],
-    "scaler_name": [
-        "standard",
-    ]
-})
 
 
 class Parameters(TypedDict):

@@ -7,10 +7,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import NDArray
 import seaborn
+from sklearn.model_selection import ParameterGrid
 from typing import cast
 
-from experiment_1_results import get_result, get_parameter_values, parameter_grid, Parameters, Result
+from experiment_1_results import get_result, get_parameter_values, Parameters, Result
 from utils import plot
+
+parameter_grid = ParameterGrid({
+    "corpus_name": [
+        "BNC",
+        "Simple English Wikipedia"
+    ],
+    "seed": list(range(1)),
+    "sample_size": [0.001],
+    "window_size": [11],
+    "scaler_name": [
+        "standard",
+    ]
+})
+
 
 ORDER = ["Content", "Function"]
 PALETTE = {"Content": "#4c72b0", "Function": "#dd8452"}
