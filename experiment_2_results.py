@@ -15,12 +15,19 @@ from semantic_content.transformer import SemanticContentTransformer
 
 parameter_grid = ParameterGrid({
     "protocol_name": [
+        "context",
+        "diagonal",
         "english",
+        "holistic",
+        "negation",
         "ntc",
+        "order",
+        "random",
+        "rotated",
         "tc",
     ],
-    "num_colors": [100],
-    "num_shapes": [100],
+    "num_colors": [1000],
+    "num_shapes": [1000],
     "seed": [1],
     "sample_size": [100000],
     "scaler_name": [

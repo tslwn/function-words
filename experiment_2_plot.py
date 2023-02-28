@@ -14,11 +14,9 @@ from utils import plot
 def callback(ax: plt.Axes, result: tuple[Parameters, NDArray[np.int_]]) -> None:
     parameters, x = result
 
-    protocol_name, num_colors, num_shapes, _seed, sample_size, scaler_name = get_parameter_values(
-        parameters)
+    protocol_name, _, _, _, _, _ = get_parameter_values(parameters)
 
-    ax.set_title(
-        f"{protocol_name}, {scaler_name}, C={num_colors}, S={num_shapes}, N={sample_size}")
+    ax.set_title(f"{protocol_name}")
 
     ax.set_xlabel("Semantic content")
 

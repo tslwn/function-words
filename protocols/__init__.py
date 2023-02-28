@@ -5,6 +5,7 @@ from .context_sensitive_ntc import ContextSensitiveNTCProtocol
 from .diagonal_ntc import DiagonalNTCProtocol
 from .english import EnglishProtocol
 from .holistic import HolisticProtocol
+from .negation_ntc import NegationNTCProtocol
 from .ntc import NTCProtocol
 from .order_sensitive_ntc import OrderSensitiveNTCProtocol
 from .random import RandomProtocol
@@ -16,6 +17,7 @@ ProtocolName = Literal[
     "diagonal",
     "english",
     "holistic",
+    "negation",
     "ntc",
     "order",
     "random",
@@ -33,6 +35,8 @@ def get_protocol(protocol_name: ProtocolName, num_colors: int, num_shapes: int, 
         return EnglishProtocol(num_colors, num_shapes, separator, seed)
     elif protocol_name == "holistic":
         return HolisticProtocol(num_colors, num_shapes, separator, seed)
+    elif protocol_name == "negation":
+        return NegationNTCProtocol(num_colors, separator, seed)
     elif protocol_name == "ntc":
         return NTCProtocol(num_colors, num_shapes, separator, seed)
     elif protocol_name == "order":

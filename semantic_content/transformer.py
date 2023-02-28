@@ -2,13 +2,14 @@
 # pyright: reportUnknownMemberType=false
 # pyright: reportUnknownVariableType=false
 
-from math import isnan, log
+from math import log
 from nltk import FreqDist
 from nltk.collocations import BigramCollocationFinder
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted
+from typing import Optional
 
 
 class SemanticContentTransformer(BaseEstimator, TransformerMixin):
@@ -83,7 +84,7 @@ class SemanticContentTransformer(BaseEstimator, TransformerMixin):
 
         return self
 
-    def transform(self, _X: list[list[tuple[str, bool]]]) -> tuple[NDArray[np.float_], NDArray[np.int_]]:
+    def transform(self, _X: list[list[tuple[str, bool]]]) -> tuple[NDArray[np.float_], NDArray[np.bool_]]:
         check_is_fitted(self, "kl_divergences_")
         check_is_fitted(self, "is_function_words_")
 
@@ -91,11 +92,9 @@ class SemanticContentTransformer(BaseEstimator, TransformerMixin):
         is_function_words: list[int] = []
 
         for index in range(0, self.index_):
-            word = self.words_.get(index, None)
-            kl_divergence = self.kl_divergences_.get(index, float("nan"))
-            is_function_word = self.is_function_words_.get(index, None)
-
-            if word is not None and not isnan(kl_divergence) and is_function_word is not None:
+            x = self._get_x(index)
+            if x is not None:
+                _, kl_divergence, is_function_word = x
                 kl_divergences.append(kl_divergence)
                 is_function_words.append(is_function_word)
 
@@ -107,11 +106,19 @@ class SemanticContentTransformer(BaseEstimator, TransformerMixin):
         words: list[str] = []
 
         for index in range(0, self.index_):
-            word = self.words_.get(index, None)
-            kl_divergence = self.kl_divergences_.get(index, float("nan"))
-            is_function_word = self.is_function_words_.get(index, None)
-
-            if word is not None and not isnan(kl_divergence) and is_function_word is not None:
+            x = self._get_x(index)
+            if x is not None:
+                word, _, _ = x
                 words.append(word)
 
         return words
+
+    def _get_x(self, index: int) -> Optional[tuple[str, float, bool]]:
+        word = self.words_.get(index, None)
+        kl_divergence = self.kl_divergences_.get(index, 0.0)
+        is_function_word = self.is_function_words_.get(index, None)
+
+        if word is not None and kl_divergence != 0.0 and is_function_word is not None:
+            return (word, kl_divergence, is_function_word)
+        else:
+            return None
